@@ -1,0 +1,10 @@
+TO RUN THIS, MAKE SURE YOUR MACHINE HAS AVX SUPPORT (ON LINUX, THE COMMAND `lscpu | grep avx` WILL CHECK FOR THIS )
+
+
+INSTRUCTIONS TO RUN
+
+- `sudo apt update`
+- `sudo apt install build-essential`
+- `gcc vectorize.c -o vector_mul -mavx`
+- `./vector_mul`
+
