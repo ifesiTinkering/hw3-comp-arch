@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <immintrin.h>  // Header for AVX intrinsics
 #include <time.h>
+#include <stdint.h>
 
 #define VECTOR_SIZE 1024
 
@@ -26,8 +27,8 @@ void multiply_vectors_vectorized(float* a, float* b, float* result, int size) {
 
 int main() {
     float a[VECTOR_SIZE], b[VECTOR_SIZE], result_baseline[VECTOR_SIZE], result_vectorized[VECTOR_SIZE];
-    clock_t start, end;
-    double time_baseline, time_vectorized;
+    struct timespec start, end;
+    uint64_t time_baseline, time_vectorized;
 
     // Initialize input arrays
     for (int i = 0; i < VECTOR_SIZE; i++) {
@@ -36,18 +37,18 @@ int main() {
     }
 
     // Baseline multiplication
-    start = clock();
+    clock_gettime(CLOCK_MONOTONIC, &start);
     multiply_vectors_baseline(a, b, result_baseline, VECTOR_SIZE);
-    end = clock();
-    time_baseline = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("Baseline multiplication time: %f seconds\n", time_baseline);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    time_baseline = (end.tv_sec - start.tv_sec) * 1000000000L + (end.tv_nsec - start.tv_nsec);
+    printf("Baseline multiplication time: %lu nanoseconds\n", time_baseline);
 
     // Vectorized multiplication
-    start = clock();
+    clock_gettime(CLOCK_MONOTONIC, &start);
     multiply_vectors_vectorized(a, b, result_vectorized, VECTOR_SIZE);
-    end = clock();
-    time_vectorized = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("Vectorized multiplication time: %f seconds\n", time_vectorized);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    time_vectorized = (end.tv_sec - start.tv_sec) * 1000000000L + (end.tv_nsec - start.tv_nsec);
+    printf("Vectorized multiplication time: %lu nanoseconds\n", time_vectorized);
 
     // Compare results
     for (int i = 0; i < VECTOR_SIZE; i++) {
@@ -60,4 +61,3 @@ int main() {
     printf("Results match for all elements.\n");
     return 0;
 }
-//run with bothe -fvectorize flag and not 
