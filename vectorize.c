@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <immintrin.h>  // Header for AVX intrinsics
+#include <time.h>
 
 #define VECTOR_SIZE 1024
 
@@ -25,6 +26,8 @@ void multiply_vectors_vectorized(float* a, float* b, float* result, int size) {
 
 int main() {
     float a[VECTOR_SIZE], b[VECTOR_SIZE], result_baseline[VECTOR_SIZE], result_vectorized[VECTOR_SIZE];
+    clock_t start, end;
+    double time_baseline, time_vectorized;
 
     // Initialize input arrays
     for (int i = 0; i < VECTOR_SIZE; i++) {
@@ -33,10 +36,18 @@ int main() {
     }
 
     // Baseline multiplication
+    start = clock();
     multiply_vectors_baseline(a, b, result_baseline, VECTOR_SIZE);
+    end = clock();
+    time_baseline = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("Baseline multiplication time: %f seconds\n", time_baseline);
 
     // Vectorized multiplication
+    start = clock();
     multiply_vectors_vectorized(a, b, result_vectorized, VECTOR_SIZE);
+    end = clock();
+    time_vectorized = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("Vectorized multiplication time: %f seconds\n", time_vectorized);
 
     // Compare results
     for (int i = 0; i < VECTOR_SIZE; i++) {
