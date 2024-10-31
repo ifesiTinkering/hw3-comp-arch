@@ -60,3 +60,4 @@ int main() {
     printf("Results match for all elements.\n");
     return 0;
 }
+//run with bothe -fvectorize flag and not 
